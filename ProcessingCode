@@ -1,0 +1,21 @@
+import themidibus.*;
+
+MidiBus bus;
+
+int lastCheck = 0;
+int time = 60000 / 172;
+
+ void setup() {
+   size(400, 400);
+   bus = new MidiBus(this, 0, 1);
+ }  
+
+void draw() {
+  while(millis() - lastCheck >= time) {
+    System.out.println(millis() - lastCheck);
+    lastCheck += time;
+    bus.sendNoteOn(0, 64, 127);
+    while(millis() - lastCheck <= time/4) {}
+    bus.sendNoteOff(0, 64, 127);
+  }
+}
