@@ -3,7 +3,12 @@ import themidibus.*;
 MidiBus bus;
 
 int lastCheck = 0;
-int time = 60000 / 172;
+int time = 60000 / 120;
+int count = 0;
+int[] measures = {12, 12, 12};
+int subdivision = measures[0];
+int m = -1;
+boolean bool = true;
 
  void setup() {
    size(400, 400);
@@ -11,11 +16,26 @@ int time = 60000 / 172;
  }  
 
 void draw() {
-  while(millis() - lastCheck >= time) {
+  while(millis() - lastCheck >= time && bool) {
     System.out.println(millis() - lastCheck);
+    if (count % subdivision == 0) {
+      bus.sendNoteOn(0, 80, 200);
+      while(millis() - lastCheck <= time/15) {}
+      bus.sendNoteOff(0, 80, 200);
+      m++;
+      if (m >= measures.length) {
+        bool = false;
+      }
+      else {
+        subdivision = measures[m];
+      }
+    }
+    else {
+      bus.sendNoteOn(0, 70, 75);
+      while(millis() - lastCheck <= time/15) {}
+      bus.sendNoteOff(0, 70, 75);
+    }
+    count++;
     lastCheck += time;
-    bus.sendNoteOn(0, 64, 127);
-    while(millis() - lastCheck <= time/4) {}
-    bus.sendNoteOff(0, 64, 127);
   }
 }
